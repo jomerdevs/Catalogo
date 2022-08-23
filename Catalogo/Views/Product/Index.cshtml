@@ -1,0 +1,101 @@
+﻿@model IEnumerable<Catalogo.Models.Product>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2 class="text-center my-5">PRODUCTS</h2>
+
+@if (TempData["InfoMessage"] != null)
+{
+    <div class="alert alert-info">
+        <strong>Info: </strong> @TempData["InfoMessage"];
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span>&times;</span></button>
+    </div>
+}
+else if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        <strong>Success: </strong> @TempData["SuccessMessage"];
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span>&times;</span></button>
+    </div>
+}
+else if (TempData["ErroMessage"] != null)
+{
+    <div class="alert alert-danger">
+        <strong>Error: </strong> @TempData["ErroMessage"];
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span>&times;</span></button>
+    </div>
+}
+
+    <p">
+        @Html.ActionLink("Create New Product", "Create", null, new { @class = "btn btn-success my-3" })
+   
+    </p>
+    <div class="input-group my-3">
+        <input type="text" class="form-control" id="filterProductsInput" placeholder="Type to search">
+        <button class="btn btn-primary" type="button" id="filterProducts" onclick="Search()">Search</button>
+    </div>
+    <table class="table table-striped">
+        <thead>
+            <tr class="text-center">
+                <th>
+                    @Html.DisplayNameFor(model => model.RefCode)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Model)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Price)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Brand)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CategoryId)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Category)
+                </th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr class="text-center">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.RefCode)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Model)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Price)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Brand)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CategoryId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Category)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", null, new { id = item.Id }, new { @class = "btn btn-primary" })
+                        @Html.ActionLink("Details", "Details", null, new { id = item.Id }, new { @class = "btn btn-secondary mx-3" })
+                        @Html.ActionLink("Delete", "Delete", null, new { id = item.Id }, new { @class = "btn btn-danger" })
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+    <script src="~/Scripts/CustomJS/autoHideAlert.js"></script>

@@ -286,5 +286,26 @@ namespace Catalogo.DataLayer
 
             return list;
         }
+
+        // ================= DELETE PRODUCT ===================
+        public string DeleteProduct(int id)
+        {
+            string result = "";
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                SqlCommand cmd = new SqlCommand("deleteProduct", connection);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@id", id);
+                cmd.Parameters.Add("@RETURNMESSAGE", SqlDbType.VarChar, 50).Direction = ParameterDirection.Output;
+
+                connection.Open();
+                cmd.ExecuteNonQuery();
+                result = cmd.Parameters["@RETURNMESSAGE"].Value.ToString();
+                connection.Close();
+            }
+
+            return result;
+        }
     }
 }

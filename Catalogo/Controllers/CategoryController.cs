@@ -25,10 +25,25 @@ namespace Catalogo.Controllers
             return View(categoryList);
         }
 
-        // GET: Category/Details
+        // CATEGORY DETAILS
         public ActionResult Details(int id)
         {
-            return View();
+            try
+            {
+                var category = _categoryDAL.GetCategoryById(id).FirstOrDefault();
+
+                if (category == null)
+                {
+                    TempData["InfoMessage"] = "Category not available";
+                    return RedirectToAction("Index");
+                }
+                return View(category);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErroMessage"] = ex.Message;
+                return View();
+            }
         }
 
         // CREATE CATEGORY METHOD: GET
@@ -37,7 +52,7 @@ namespace Catalogo.Controllers
             return View();
         }
 
-        // POST: Category/Create
+        // CREATE CATEGORY METHOD: POST
         [HttpPost]
         public ActionResult Create(Category category)
         {
@@ -80,7 +95,7 @@ namespace Catalogo.Controllers
             return View(category);
         }
 
-        // POST: Category/Edit/5
+        // UPDATE CATEGORY METHOD: GET
         [HttpPost, ActionName("Edit")]
         public ActionResult UpdateCategory(Category category)
         {
@@ -108,24 +123,48 @@ namespace Catalogo.Controllers
             }
         }
 
-        // GET: Category/Delete/5
+        // DELETE CATEGORY METHOD: GET
         public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: Category/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
         {
             try
             {
-                // TODO: Add delete logic here
+                var category = _categoryDAL.GetCategoryById(id).FirstOrDefault();
 
+                if (category == null)
+                {
+                    TempData["InfoMessage"] = "Product not available";
+                    return RedirectToAction("Index");
+                }
+                return View(category);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErroMessage"] = ex.Message;
+                return View();
+            }
+        }
+
+        // DELETE CATEGORY METHOD: POST
+        [HttpPost, ActionName("Delete")]
+        public ActionResult DeleteCategory(int id)
+        {
+            try
+            {
+                string result = _categoryDAL.DeleteCategory(id);
+
+                if (result.Contains("deleted"))
+                {
+                    TempData["SuccessMessage"] = result;
+                }
+                else
+                {
+                    TempData["ErroMessage"] = result;
+                }
                 return RedirectToAction("Index");
             }
-            catch
+            catch (Exception ex)
             {
+                TempData["ErroMessage"] = ex.Message;
                 return View();
             }
         }

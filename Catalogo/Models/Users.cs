@@ -23,7 +23,7 @@ namespace Catalogo.Models
         public string Phone { get; set; }
         [Required]
         public string Password { get; set; }
-        [Required]
+        
         public bool IsAdmin { get; set; }
         [Required]
         [DisplayName("Confirm Password")]

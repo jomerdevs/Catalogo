@@ -1,5 +1,6 @@
 ﻿using Catalogo.DataLayer;
 using Catalogo.Models;
+using Catalogo.Permissions;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -13,6 +14,7 @@ using System.Web.Mvc;
 
 namespace Catalogo.Controllers
 {
+    [ValidateSession]
     public class AdminController : Controller
     {
         AdminDAL _userDAL = new AdminDAL();
@@ -29,7 +31,7 @@ namespace Catalogo.Controllers
             return View(usersList);
         }       
 
-        // GET: Admin/Details/5
+        // DETAILS
         public ActionResult Details(int id)
         {
             try

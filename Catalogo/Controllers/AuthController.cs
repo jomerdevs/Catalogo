@@ -25,72 +25,86 @@ namespace Catalogo.Controllers
         [HttpPost, ActionName("Login")]
         public ActionResult LoginUser(Users user)
         {
-            user.Password = HashSha256(user.Password);
-            Users auxUser = null;
-
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            
+            if (user.Password != null)
             {
-                try
+                user.Password = HashSha256(user.Password);
+
+                using (SqlConnection connection = new SqlConnection(ConnectionString))
                 {
-                    using (SqlCommand cmd = new SqlCommand("validateUser", connection))
+                    try
                     {
-                        cmd.CommandType = CommandType.StoredProcedure;                        
-                        cmd.Parameters.AddWithValue("@email", user.Email);                        
-                        cmd.Parameters.AddWithValue("@password", user.Password);
-                        
-                        // Open DB Connection
-                        connection.Open();                       
-
-                        user.Id = Convert.ToInt32(cmd.ExecuteScalar().ToString());
-                        SqlDataReader reader = cmd.ExecuteReader();
-
-                        if (reader != null)
+                        using (SqlCommand cmd = new SqlCommand("validateUser", connection))
                         {
-                            auxUser = new Users();
-                            int propIsAdmin = reader.GetOrdinal("IsAdmin");
+                            cmd.CommandType = CommandType.StoredProcedure;
+                            cmd.Parameters.AddWithValue("@email", user.Email);
+                            cmd.Parameters.AddWithValue("@password", user.Password);
+                            
+                            // Open DB Connection
+                            connection.Open();
+                            
+                            user.Id = Convert.ToInt32(cmd.ExecuteScalar().ToString());
+                            SqlDataReader reader = cmd.ExecuteReader();
 
-                            while (reader.Read())
-                            {                                 
-                                user.IsAdmin = reader.IsDBNull(propIsAdmin) ? false : reader.GetBoolean(propIsAdmin);                                
+                            if (reader != null)
+                            {
+
+                                int propIsAdmin = reader.GetOrdinal("IsAdmin");
+
+                                while (reader.Read())
+                                {
+                                    user.IsAdmin = reader.IsDBNull(propIsAdmin) ? false : reader.GetBoolean(propIsAdmin);
+                                }
                             }
+
+                            connection.Close();
+
                         }
 
-                        connection.Close();
-
-                    }
-
-                    // CHECK IF USER EXISTS
-                    if (user.Id != 0)
-                    {
-                        /* CHECK IF ISADMIN, ADMIN GOING TO SHOW THE ADMIN VIEWS WITH ALL ACTIONS BUTTONS,
-                           IF NOT ADMIN GOING TO SHOW ONLY TABLES WITHOUT ACTIONS */
-                        if (user.IsAdmin)
+                        // CHECK IF USER EXISTS
+                        if (user.Id != 0)
                         {
-                            Session["userAdmin"] = user;
-                            return RedirectToAction("Index", "Product");
+                            /* CHECK IF ISADMIN, ADMIN GOING TO SHOW THE ADMIN VIEWS WITH ALL ACTIONS BUTTONS,
+                               IF NOT ADMIN GOING TO SHOW ONLY TABLES WITHOUT ACTIONS */
+                            if (user.IsAdmin)
+                            {
+                                Session["user"] = user;
+                                return RedirectToAction("Index", "Product");
+                            }
+                            else
+                            {
+                                Session["user"] = user;
+                                return RedirectToAction("Index", "UserProduct");
+                            }
                         }
                         else
                         {
-                            Session["user"] = user;
-                            return RedirectToAction("Index", "UserProduct");
-                        }                 
-                        
+                            TempData["InfoMessage"] = "User Not Found";
+                            return View();
+                        }
                     }
-                    else
+                    catch (Exception)
                     {
-                        ViewData["message"] = "User not found";
+                        connection.Close();
+                        TempData["InfoMessage"] = "User not found..!!";
                         return View();
                     }
-                    
 
                 }
-                catch (Exception)
-                {
-                    connection.Close();
-                    return View();
-                }
 
-            }            
+            }
+            else
+            {
+                TempData["ErroMessage"] = "Password required";
+                return View();
+            }                      
+        }
+
+        // ===== LOGOUT =====
+        public ActionResult Logout()
+        {
+            Session["user"] = null;
+            return RedirectToAction("Login", "Auth");
         }
 
         // REGISTER USER METHOD: GET
@@ -101,7 +115,7 @@ namespace Catalogo.Controllers
 
         // ======== CREATE METHOD FOR HASH THE PASSWORD ===========
         public static string HashSha256(string password)
-        {
+        {            
             StringBuilder sb = new StringBuilder();
             using (SHA256 hash = SHA256.Create())
             {
@@ -123,59 +137,68 @@ namespace Catalogo.Controllers
             bool registered;
             string message;
 
-            if (user.Password == user.ConfirmPassword)
+            if(user.Password != null)
             {
-                user.Password = HashSha256(user.Password);
+                if (user.Password == user.ConfirmPassword)
+                {
+                    user.Password = HashSha256(user.Password);
+
+                    using (SqlConnection connection = new SqlConnection(ConnectionString))
+                    {
+                        try
+                        {
+                            using (SqlCommand cmd = new SqlCommand("Register", connection))
+                            {
+                                cmd.CommandType = CommandType.StoredProcedure;
+                                cmd.Parameters.AddWithValue("@firstName", user.FirstName);
+                                cmd.Parameters.AddWithValue("@lastName", user.LastName);
+                                cmd.Parameters.AddWithValue("@email", user.Email);
+                                cmd.Parameters.AddWithValue("@phone", user.Phone);
+                                cmd.Parameters.AddWithValue("@password", user.Password);
+                                cmd.Parameters.Add("@registered", SqlDbType.Bit).Direction = ParameterDirection.Output;
+                                cmd.Parameters.Add("@message", SqlDbType.VarChar, 100).Direction = ParameterDirection.Output;
+
+                                // Open DB Connection
+                                connection.Open();
+                                cmd.ExecuteNonQuery(); // Returns 1 for success and 0 when fail
+
+                                registered = Convert.ToBoolean(cmd.Parameters["@registered"].Value);
+                                message = cmd.Parameters["@message"].Value.ToString();
+                                connection.Close();
+                            }
+                            TempData["SuccessMessage"] = message;
+
+                            if (registered)
+                            {
+                                return RedirectToAction("Login", "Auth");
+                            }
+                            else
+                            {                                
+                                return View();
+                            }
+
+                        }
+                        catch (Exception)
+                        {
+                            connection.Close();
+                            TempData["ErroMessage"] = "The email or phone already exist";
+                            return View();
+                        }
+
+                    }
+                }
+                else
+                {
+                    TempData["ErroMessage"] = "The Passwords don't match";
+                    return View();
+                }
             }
             else
             {
-                ViewData["message"] = "The Passwords don't match";
+                TempData["ErroMessage"] = "The password is required";
+                return View();
             }
-            
-
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
-            {
-                try
-                {
-                    using (SqlCommand cmd = new SqlCommand("registerUser", connection))
-                    {
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Parameters.AddWithValue("@firstName", user.FirstName);
-                        cmd.Parameters.AddWithValue("@lastName", user.LastName);
-                        cmd.Parameters.AddWithValue("@email", user.Email);
-                        cmd.Parameters.AddWithValue("@phone", user.Phone);
-                        cmd.Parameters.AddWithValue("@password", user.Password);
-                        cmd.Parameters.AddWithValue("@isAdmin", user.IsAdmin);
-                        cmd.Parameters.Add("@registered", SqlDbType.Bit).Direction = ParameterDirection.Output;
-                        cmd.Parameters.Add("@message", SqlDbType.VarChar, 100).Direction = ParameterDirection.Output;
-
-                        // Open DB Connection
-                        connection.Open();
-                        cmd.ExecuteNonQuery(); // Returns 1 for success and 0 when fail
-
-                        registered = Convert.ToBoolean(cmd.Parameters["registered"].Value);
-                        message = cmd.Parameters["message"].Value.ToString();
-                        connection.Close();
-                    }
-                    ViewData["message"] = message;
-
-                    if (registered)
-                    {
-                        return RedirectToAction("Login", "Auth");
-                    }
-                    else
-                    {
-                        return View();
-                    }
-
-                }
-                catch (Exception)
-                {                    
-                    connection.Close();
-                    return View();
-                }
-
-            }
+                 
         }
     }
 }

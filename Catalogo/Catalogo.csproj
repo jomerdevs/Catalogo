@@ -138,6 +138,7 @@
     <Compile Include="Models\Product.cs" />
     <Compile Include="Models\UserAux.cs" />
     <Compile Include="Models\Users.cs" />
+    <Compile Include="Permissions\ValidateSessionAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -146,6 +147,7 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\css\Login.css" />
+    <Content Include="Content\css\LoginForm.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />

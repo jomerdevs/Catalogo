@@ -5,9 +5,11 @@ using System.Web;
 using System.Web.Mvc;
 using Catalogo.DataLayer;
 using Catalogo.Models;
+using Catalogo.Permissions;
 
 namespace Catalogo.Controllers
 {
+    [ValidateSessionAttribute]
     public class ProductController : Controller
     {
         ProductDAL _productDAL = new ProductDAL();

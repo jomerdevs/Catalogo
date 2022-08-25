@@ -1,4 +1,5 @@
 ﻿using Catalogo.DataLayer;
+using Catalogo.Permissions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,7 @@ using System.Web.Mvc;
 
 namespace Catalogo.Controllers
 {
+    [ValidateSession]
     public class UserCategoryController : Controller
     {
         CategoryDAL _categoryDAL = new CategoryDAL();

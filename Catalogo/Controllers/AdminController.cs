@@ -32,7 +32,22 @@ namespace Catalogo.Controllers
         // GET: Admin/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            try
+            {
+                var user = _userDAL.GetUserById(id).FirstOrDefault();
+
+                if (user == null)
+                {
+                    TempData["InfoMessage"] = "Category not available";
+                    return RedirectToAction("Index");
+                }
+                return View(user);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErroMessage"] = ex.Message;
+                return View();
+            }            
         }
 
         // CREATE USER BY ADMIN METHOD: GET

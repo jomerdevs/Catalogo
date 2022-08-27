@@ -120,24 +120,14 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\AuthController.cs" />
-    <Compile Include="Controllers\CategoryController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\ProductController.cs" />
     <Compile Include="Controllers\UserCategoryController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\UserProductController.cs" />
-    <Compile Include="DataLayer\AdminDAL.cs" />
-    <Compile Include="DataLayer\CategoryDAL.cs" />
-    <Compile Include="DataLayer\ProductDAL.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\Category.cs" />
-    <Compile Include="Models\Product.cs" />
-    <Compile Include="Models\UserAux.cs" />
-    <Compile Include="Models\Users.cs" />
     <Compile Include="Permissions\ValidateSessionAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -181,30 +171,31 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Product\Index.cshtml" />
-    <Content Include="Views\Category\Index.cshtml" />
-    <Content Include="Views\Product\Create.cshtml" />
-    <Content Include="Views\Category\Create.cshtml" />
-    <Content Include="Views\Product\Edit.cshtml" />
-    <Content Include="Views\Category\Edit.cshtml" />
-    <Content Include="Views\Product\Delete.cshtml" />
-    <Content Include="Views\Category\Delete.cshtml" />
-    <Content Include="Views\Category\Details.cshtml" />
-    <Content Include="Views\Product\Details.cshtml" />
-    <Content Include="Views\Admin\Index.cshtml" />
-    <Content Include="Views\Admin\Edit.cshtml" />
-    <Content Include="Views\Admin\Delete.cshtml" />
     <Content Include="Views\Shared\_UserLayout.cshtml" />
-    <Content Include="Views\User\Index.cshtml" />
-    <Content Include="Views\UserProduct\Index.cshtml" />
-    <Content Include="Views\UserCategory\Index.cshtml" />
     <Content Include="Views\Auth\Login.cshtml" />
     <Content Include="Views\Auth\Register.cshtml" />
+    <Content Include="Views\Category\Index.cshtml" />
+    <Content Include="Views\Category\Details.cshtml" />
+    <Content Include="Views\Category\Create.cshtml" />
+    <Content Include="Views\Category\Edit.cshtml" />
+    <Content Include="Views\Category\Delete.cshtml" />
+    <Content Include="Views\Product\Create.cshtml" />
+    <Content Include="Views\Product\Delete.cshtml" />
+    <Content Include="Views\Product\Details.cshtml" />
+    <Content Include="Views\Product\Edit.cshtml" />
+    <Content Include="Views\Product\Index.cshtml" />
     <Content Include="Views\Admin\Create.cshtml" />
     <Content Include="Views\Admin\Details.cshtml" />
+    <Content Include="Views\Admin\Edit.cshtml" />
+    <Content Include="Views\Admin\Index.cshtml" />
+    <Content Include="Views\Admin\Delete.cshtml" />
+    <Content Include="Views\UserProduct\Index.cshtml" />
+    <Content Include="Views\UserCategory\Index.cshtml" />
+    <Content Include="Views\User\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -218,6 +209,23 @@
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-3.4.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.4.1.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Admin\Admin.csproj">
+      <Project>{82003eb3-8588-4cb4-95f2-80b105310df2}</Project>
+      <Name>Admin</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DataBusiness\DataBusiness.csproj">
+      <Project>{d9f575a6-d8e5-41fe-9aae-1a2b7a260523}</Project>
+      <Name>DataBusiness</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DataEntityLayer\DataEntityLayer.csproj">
+      <Project>{4d89db72-e2a9-4eb9-b604-489f670cd2e6}</Project>
+      <Name>DataEntityLayer</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -1,5 +1,5 @@
-﻿using Catalogo.DataLayer;
-using Catalogo.Permissions;
+﻿using Catalogo.Permissions;
+using DataBusiness;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,11 +11,11 @@ namespace Catalogo.Controllers
     [ValidateSession]
     public class UserController : Controller
     {
-        AdminDAL _userDAL = new AdminDAL();
+        AdminBL _userBL = new AdminBL();
         // GET: User
         public ActionResult Index()
         {
-            var usersList = _userDAL.GetAll();
+            var usersList = _userBL.GetAll();
 
             if (usersList.Count == 0)
             {
@@ -23,6 +23,6 @@ namespace Catalogo.Controllers
             }
             return View(usersList);
         }
-        
+
     }
 }

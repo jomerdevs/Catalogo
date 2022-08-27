@@ -1,8 +1,10 @@
-﻿@model Catalogo.Models.Category
+﻿@model DataEntityLayer.CategoryEntity
 
 @{
     ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 
 <h2 class="text-center my-5">UPDATE</h2>
 
@@ -49,7 +51,7 @@
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-primary"})
+    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-primary" })
 </div>
 
 <script src="~/Scripts/CustomJS/autoHideAlert.js"></script>

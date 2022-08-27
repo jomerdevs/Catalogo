@@ -1,5 +1,5 @@
-﻿using Catalogo.DataLayer;
-using Catalogo.Permissions;
+﻿using Catalogo.Permissions;
+using DataBusiness;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,11 +11,11 @@ namespace Catalogo.Controllers
     [ValidateSession]
     public class UserCategoryController : Controller
     {
-        CategoryDAL _categoryDAL = new CategoryDAL();
+        CategoryBL _categoryBL = new CategoryBL();
         // GET: UserCategory
         public ActionResult Index()
         {
-            var categoryList = _categoryDAL.GetAll();
+            var categoryList = _categoryBL.GetAll();
 
             if (categoryList.Count == 0)
             {

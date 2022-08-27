@@ -1,8 +1,10 @@
-﻿@model Catalogo.Models.Category
+﻿@model DataEntityLayer.CategoryEntity
 
 @{
     ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 
 <h2 class="text-center my-5">DETAILS</h2>
 
@@ -29,6 +31,6 @@
     </dl>
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "btn btn-primary"})
-    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-secondary mx-3"})
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-secondary mx-3" })
 </p>

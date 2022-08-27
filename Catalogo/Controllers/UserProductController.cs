@@ -1,5 +1,5 @@
-﻿using Catalogo.DataLayer;
-using Catalogo.Permissions;
+﻿using Catalogo.Permissions;
+using DataBusiness;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,11 +11,12 @@ namespace Catalogo.Controllers
     [ValidateSession]
     public class UserProductController : Controller
     {
-        ProductDAL _productDAL = new ProductDAL();
+        ProductBL _productBL = new ProductBL();
+
         // GET: UserProduct
         public ActionResult Index()
         {
-            var productList = _productDAL.GetAll();
+            var productList = _productBL.GetAll();
 
             if (productList.Count == 0)
             {

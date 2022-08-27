@@ -1,9 +1,10 @@
-﻿@model IEnumerable<Catalogo.Models.Users>
+﻿@model IEnumerable<DataEntityLayer.UserEntity>
 
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_UserLayout.cshtml";
 }
+
 
 <h2 class="text-center my-5">USERS</h2>
 
@@ -21,8 +22,8 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Phone)
-            </th>            
-            
+            </th>
+
         </tr>
     </thead>
     <tbody>
@@ -40,11 +41,10 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Phone)
-                </td>            
-                
+                </td>
+
             </tr>
         }
     </tbody>
 
 </table>
-

@@ -1,4 +1,4 @@
-﻿@model Catalogo.Models.UserAux
+﻿@model DataEntityLayer.UserAuxEntity
 
 @{
     ViewBag.Title = "Details";
@@ -63,5 +63,5 @@
 </div>
 <p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "btn btn-primary"})
-    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-secondary mx-3"})
+    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-secondary mx-3" })
 </p>

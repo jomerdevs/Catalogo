@@ -8,6 +8,14 @@
 
 <h2 class="text-center my-5">USERS</h2>
 
+@using (Html.BeginForm())
+            {
+                <div>
+                    @Html.TextBox("search")
+                    <input type="submit" value="Search" class="mx-3"/>
+                </div>
+            }
+
 <table class="table table-striped">
     <thead>
         <tr class="text-center">

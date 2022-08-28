@@ -15,10 +15,15 @@ namespace Admin.Controllers
         ProductBL _productBL = new ProductBL();
 
         // GET ALL PRODUCTS
-        public ActionResult Index()
+        public ActionResult Index(string search)
         {
             var productList = _productBL.GetAll();
 
+            if (!String.IsNullOrEmpty(search))
+            {
+                productList = productList.Where(s => s.Name.ToUpper().Contains(search.ToUpper())
+                                || s.Model.ToUpper().Contains(search.ToUpper()) || s.Brand.ToUpper().Contains(search.ToUpper()) || s.Category.ToUpper().Contains(search.ToUpper())).ToList();
+            }
             if (productList.Count == 0)
             {
                 TempData["InfoMessage"] = "No products to show";

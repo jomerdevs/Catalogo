@@ -17,10 +17,15 @@ namespace Admin.Controllers
         UserEntity userEx = new UserEntity();
 
         // GET ALL USERS
-        public ActionResult Index()
+        public ActionResult Index(string search)
         {
             var usersList = _userBL.GetAll();
 
+            if (!String.IsNullOrEmpty(search))
+            {
+                usersList = usersList.Where(s => s.FirstName.ToUpper().Contains(search.ToUpper())
+                                || s.LastName.ToUpper().Contains(search.ToUpper()) || s.Email.ToUpper().Contains(search.ToUpper())).ToList();
+            }
             if (usersList.Count == 0)
             {
                 TempData["InfoMessage"] = "No users to show";

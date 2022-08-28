@@ -32,6 +32,15 @@ else if (TempData["ErroMessage"] != null)
 <p>
     @Html.ActionLink("Create New User", "Create", null, new { @class = "btn btn-success" })
 </p>
+
+@using (Html.BeginForm())
+{
+    <div>
+        @Html.TextBox("search")
+        <input type="submit" value="Search" class="mx-3" />
+    </div>
+}
+
 <table class="table table-striped">
     <thead>
         <tr class="text-center">

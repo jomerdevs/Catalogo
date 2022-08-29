@@ -42,7 +42,7 @@ namespace Admin.Controllers
 
                 if (user == null)
                 {
-                    TempData["InfoMessage"] = "Category not available";
+                    TempData["InfoMessage"] = "User not available";
                     return RedirectToAction("Index");
                 }
                 return View(user);
@@ -166,7 +166,7 @@ namespace Admin.Controllers
 
                 if (user == null)
                 {
-                    TempData["InfoMessage"] = "Product not available";
+                    TempData["InfoMessage"] = "User not available";
                     return RedirectToAction("Index");
                 }
                 return View(user);

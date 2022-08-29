@@ -139,7 +139,7 @@ namespace Admin.Controllers
 
                 if (category == null)
                 {
-                    TempData["InfoMessage"] = "Product not available";
+                    TempData["InfoMessage"] = "Category not available";
                     return RedirectToAction("Index");
                 }
                 return View(category);

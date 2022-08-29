@@ -41,7 +41,7 @@ namespace Admin.Controllers
 
                 if (product == null)
                 {
-                    TempData["InfoMessage"] = "Category not available";
+                    TempData["InfoMessage"] = "Product not available";
                     return RedirectToAction("Index");
                 }
                 return View(product);

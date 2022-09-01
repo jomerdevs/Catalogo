@@ -137,8 +137,6 @@
     </Compile>
     <Compile Include="Permissions\ValidateSessionAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utils\ILogger.cs" />
-    <Compile Include="Utils\MyLogger.cs" />
     <Compile Include="Utils\PasswordHash.cs" />
   </ItemGroup>
   <ItemGroup>

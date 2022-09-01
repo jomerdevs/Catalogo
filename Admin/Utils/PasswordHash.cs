@@ -9,7 +9,7 @@ namespace Admin.Utils
 {
     public class PasswordHash
     {
-        // ======== CREATE METHOD FOR HASH THE PASSWORD ===========
+        
         public static string HashSha256(string password)
         {
             StringBuilder sb = new StringBuilder();

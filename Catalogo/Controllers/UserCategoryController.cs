@@ -10,24 +10,23 @@ namespace Catalogo.Controllers
 {
     [ValidateSession]
     public class UserCategoryController : Controller
-    {
+    {        
         CategoryBL _categoryBL = new CategoryBL();
-        // GET: UserCategory
-        public ActionResult Index(string search)
+
+        public ActionResult Index()
         {
-            var categoryList = _categoryBL.GetAll();
-
-            if (!String.IsNullOrEmpty(search))
-            {
-                categoryList = categoryList.Where(s => s.Name.ToUpper().Contains(search.ToUpper())
-                                || s.Description.ToUpper().Contains(search.ToUpper())).ToList();
-            }
-            if (categoryList.Count == 0)
-            {
-                TempData["InfoMessage"] = "No categories to show";
-            }
-
-            return View(categoryList);
+            return View();
         }
+
+        public JsonResult ListCat(string search)
+        {            
+            return Json(_categoryBL.GetAll(search), JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult FilterCategoryList(string search)
+        {            
+            return Json(_categoryBL.FilterCategoryList(search), JsonRequestBehavior.AllowGet);
+        }
+        
     }
 }

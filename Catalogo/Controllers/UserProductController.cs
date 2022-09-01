@@ -1,5 +1,6 @@
 ﻿using Catalogo.Permissions;
 using DataBusiness;
+using DataEntityLayer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,24 +12,23 @@ namespace Catalogo.Controllers
     [ValidateSession]
     public class UserProductController : Controller
     {
-        ProductBL _productBL = new ProductBL();
-
-        // GET: UserProduct
-        public ActionResult Index(string search)
+       
+        public ActionResult Index()
         {
-            var productList = _productBL.GetAll();
-
-            if (!String.IsNullOrEmpty(search))
-            {
-                productList = productList.Where(s => s.Name.ToUpper().Contains(search.ToUpper())
-                                || s.Model.ToUpper().Contains(search.ToUpper()) || s.Brand.ToUpper().Contains(search.ToUpper()) || s.Category.ToUpper().Contains(search.ToUpper())).ToList();
-            }
-            if (productList.Count == 0)
-            {
-                TempData["InfoMessage"] = "No products to show";
-            }
-
-            return View(productList);
+            return View();
         }
+
+        public JsonResult List(string search)
+        {
+            ProductBL _productBL = new ProductBL();
+            return Json(_productBL.GetAll(search), JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult FilterProductsList(string search)
+        {
+            ProductBL _productBL = new ProductBL();
+            return Json(_productBL.FilterProductList(search), JsonRequestBehavior.AllowGet);
+        }
+        
     }
 }

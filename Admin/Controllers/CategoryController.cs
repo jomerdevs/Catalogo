@@ -12,18 +12,13 @@ namespace Admin.Controllers
     [ValidateSession]
     public class CategoryController : Controller
     {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         CategoryBL _categoryBL = new CategoryBL();
-
-        // GET ALL CATEGORIES
+        
         public ActionResult Index(string search)
         {
-            var categoryList = _categoryBL.GetAll();
-
-            if (!String.IsNullOrEmpty(search))
-            {
-                categoryList = categoryList.Where(s => s.Name.ToUpper().Contains(search.ToUpper())
-                                || s.Description.ToUpper().Contains(search.ToUpper())).ToList();
-            }
+            var categoryList = _categoryBL.GetAll(search);
+            
             if (categoryList.Count == 0)
             {
                 TempData["InfoMessage"] = "No categories to show";
@@ -31,8 +26,7 @@ namespace Admin.Controllers
 
             return View(categoryList);
         }
-
-        // CATEGORY DETAILS
+        
         public ActionResult Details(int id)
         {
             try
@@ -48,18 +42,16 @@ namespace Admin.Controllers
             }
             catch (Exception ex)
             {
-                TempData["ErroMessage"] = ex.Message;
+                log.Info(ex.Message);
                 return View();
             }
         }
-
-        // CREATE CATEGORY METHOD: GET
+        
         public ActionResult Create()
         {
             return View();
         }
-
-        // CREATE CATEGORY METHOD: POST
+        
         [HttpPost]
         public ActionResult Create(CategoryEntity category)
         {
@@ -84,12 +76,11 @@ namespace Admin.Controllers
             }
             catch (Exception ex)
             {
-                TempData["ErroMessage"] = ex.Message;
+                log.Info(ex.Message);
                 return View();
             }
         }
-
-        // UPDATE CATEGORY METHOD: GET
+        
         public ActionResult Edit(int id)
         {
             var category = _categoryBL.GetCategoryById(id).FirstOrDefault();
@@ -101,8 +92,7 @@ namespace Admin.Controllers
             }
             return View(category);
         }
-
-        // UPDATE CATEGORY METHOD: POST
+        
         [HttpPost, ActionName("Edit")]
         public ActionResult UpdateCategory(CategoryEntity category)
         {
@@ -124,13 +114,13 @@ namespace Admin.Controllers
 
                 return RedirectToAction("Index");
             }
-            catch
+            catch(Exception ex)
             {
+                log.Info(ex.Message);
                 return View();
             }
         }
-
-        // DELETE CATEGORY METHOD: GET
+        
         public ActionResult Delete(int id)
         {
             try
@@ -146,12 +136,11 @@ namespace Admin.Controllers
             }
             catch (Exception ex)
             {
-                TempData["ErroMessage"] = ex.Message;
+                log.Info(ex.Message);
                 return View();
             }
         }
-
-        // DELETE CATEGORY METHOD: POST
+        
         [HttpPost, ActionName("Delete")]
         public ActionResult DeleteCategory(int id)
         {
@@ -173,7 +162,7 @@ namespace Admin.Controllers
             }
             catch (Exception ex)
             {
-                TempData["ErroMessage"] = ex.Message;
+                log.Info(ex.Message);
                 return View();
             }
         }

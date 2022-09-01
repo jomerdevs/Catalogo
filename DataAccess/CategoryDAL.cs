@@ -11,22 +11,21 @@ namespace DataAccess
 {
     public class CategoryDAL: ConnectionDAL
     {
-        // ================ GET ALL CATEGORIES =====================
-        public List<CategoryEntity> GetAll()
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        public List<CategoryEntity> GetAll(string search)
         {
             List<CategoryEntity> CategoryList = null;
 
             using (SqlConnection connection = new SqlConnection(Connection))
             {
                 try
-                {
-                    // Open DB Connection
+                {                    
                     connection.Open();
-
-                    // Call the pocedure
+                    
                     using (SqlCommand cmd = new SqlCommand("CategoryList", connection))
                     {
-                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.CommandType = CommandType.StoredProcedure;                        
                         SqlDataReader reader = cmd.ExecuteReader();
 
                         if (reader != null)
@@ -37,6 +36,8 @@ namespace DataAccess
                             int propId = reader.GetOrdinal("Id");
                             int propName = reader.GetOrdinal("Name");
                             int propDescription = reader.GetOrdinal("Description");
+                            int propIsActive = reader.GetOrdinal("IsActive");
+                            int propCreated = reader.GetOrdinal("Created");
 
                             while (reader.Read())
                             {
@@ -44,25 +45,102 @@ namespace DataAccess
                                 category.Id = reader.IsDBNull(propId) ? 0 : reader.GetInt32(propId);
                                 category.Name = reader.IsDBNull(propName) ? "" : reader.GetString(propName);
                                 category.Description = reader.IsDBNull(propDescription) ? "" : reader.GetString(propDescription);
+                                category.IsActive = reader.IsDBNull(propIsActive) ? false : reader.GetBoolean(propIsActive);
+                                category.Created = reader.IsDBNull(propCreated) ? DateTime.Now : reader.GetDateTime(propCreated);
 
                                 CategoryList.Add(category);
                             }
                         }
                     }
-
-                    // Close after we get the data
+                   
                     connection.Close();
+                    
+                    
                 }
                 catch (Exception ex)
+                {
+                    log.Info(ex.Message);
+                    throw ex;
+                }
+                finally
                 {
                     connection.Close();
                 }
 
             }
+
+            if (!String.IsNullOrEmpty(search))
+            {
+                CategoryList = CategoryList.Where(s => s.Name.ToUpper().Contains(search.ToUpper())
+                                || s.Description.ToUpper().Contains(search.ToUpper())).ToList();
+
+                return CategoryList;
+            }
+
             return CategoryList;
+
         }
 
-        // ================ GET CATEGORY BY ID =====================
+        public List<CategoryEntity> FilterCategoryList(string search)
+        {
+            List<CategoryEntity> list = null;
+
+            using (SqlConnection connectionString = new SqlConnection(Connection))
+            {
+                try
+                {
+
+                    connectionString.Open();
+
+                    using (SqlCommand cmd = new SqlCommand("categoryFilter", connectionString))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@search", search);
+                        SqlDataReader reader = cmd.ExecuteReader();
+
+                        if (reader != null)
+                        {
+                            list = new List<CategoryEntity>();
+                            CategoryEntity category;
+
+                            int propId = reader.GetOrdinal("Id");
+                            int propName = reader.GetOrdinal("Name");
+                            int propDescription = reader.GetOrdinal("Description");
+                            int propIsActive = reader.GetOrdinal("IsActive");
+                            int propCreated = reader.GetOrdinal("Created");
+
+                            while (reader.Read())
+                            {
+                                category = new CategoryEntity();
+                                category.Id = reader.IsDBNull(propId) ? 0 : reader.GetInt32(propId);
+                                category.Name = reader.IsDBNull(propName) ? "" : reader.GetString(propName);
+                                category.Description = reader.IsDBNull(propDescription) ? "" : reader.GetString(propDescription);
+                                category.IsActive = reader.IsDBNull(propIsActive) ? false : reader.GetBoolean(propIsActive);
+                                category.Created = reader.IsDBNull(propCreated) ? DateTime.Now : reader.GetDateTime(propCreated);
+
+                                list.Add(category);
+                            }
+                        }
+                    }
+
+
+                    connectionString.Close();
+                }
+                catch (Exception ex)
+                {
+                    log.Info(ex.Message);
+                    throw ex;
+                }
+                finally
+                {
+                    connectionString.Close();
+                }
+
+            }
+
+            return list;
+        }
+
         public List<CategoryEntity> GetCategoryById(int id)
         {
             List<CategoryEntity> CategoryList = null;
@@ -70,11 +148,9 @@ namespace DataAccess
             using (SqlConnection connection = new SqlConnection(Connection))
             {
                 try
-                {
-                    // Open DB Connection
+                {                    
                     connection.Open();
-
-                    // Call the pocedure
+                    
                     using (SqlCommand cmd = new SqlCommand("getCategoryById", connection))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
@@ -89,6 +165,8 @@ namespace DataAccess
                             int propId = reader.GetOrdinal("Id");
                             int propName = reader.GetOrdinal("Name");
                             int propDescription = reader.GetOrdinal("Description");
+                            int propIsActive = reader.GetOrdinal("IsActive");
+                            int propCreated = reader.GetOrdinal("Created");
 
                             while (reader.Read())
                             {
@@ -96,16 +174,22 @@ namespace DataAccess
                                 category.Id = reader.IsDBNull(propId) ? 0 : reader.GetInt32(propId);
                                 category.Name = reader.IsDBNull(propName) ? "" : reader.GetString(propName);
                                 category.Description = reader.IsDBNull(propDescription) ? "" : reader.GetString(propDescription);
+                                category.IsActive = reader.IsDBNull(propIsActive) ? false : reader.GetBoolean(propIsActive);
+                                category.Created = reader.IsDBNull(propCreated) ? DateTime.Now : reader.GetDateTime(propCreated);
 
                                 CategoryList.Add(category);
                             }
                         }
                     }
-
-                    // Close after we get the data
+                    
                     connection.Close();
                 }
                 catch (Exception ex)
+                {
+                    log.Info(ex.Message);
+                    throw ex;
+                }
+                finally
                 {
                     connection.Close();
                 }
@@ -113,8 +197,7 @@ namespace DataAccess
             }
             return CategoryList;
         }
-
-        // ================ CREATE CATEGORY ===================
+        
         public bool CreateCategory(CategoryEntity category)
         {
             int id = 0;
@@ -130,10 +213,10 @@ namespace DataAccess
 
                         cmd.Parameters.AddWithValue("@categoryName", category.Name);
                         cmd.Parameters.AddWithValue("@description", category.Description);
-
-                        // Open DB Connection
+                        cmd.Parameters.AddWithValue("@isActive", category.IsActive);
+                        
                         connection.Open();
-                        id = cmd.ExecuteNonQuery(); // Returns 1 for success and 0 when fail
+                        id = cmd.ExecuteNonQuery(); 
                         connection.Close();
                     }
                     if (id > 0)
@@ -148,8 +231,12 @@ namespace DataAccess
                 }
                 catch (Exception ex)
                 {
+                    log.Info(ex.Message);
+                    throw ex;
+                }
+                finally
+                {
                     connection.Close();
-                    return false;
                 }
 
             }
@@ -172,10 +259,10 @@ namespace DataAccess
                         cmd.Parameters.AddWithValue("@id", category.Id);
                         cmd.Parameters.AddWithValue("@categoryName", category.Name);
                         cmd.Parameters.AddWithValue("@description", category.Description);
-
-                        // Open DB Connection
+                        cmd.Parameters.AddWithValue("@isActive", category.IsActive);
+                        
                         connection.Open();
-                        i = cmd.ExecuteNonQuery(); // Returns 1 for success and 0 when fail
+                        i = cmd.ExecuteNonQuery(); 
                         connection.Close();
                     }
                     if (i > 0)
@@ -190,15 +277,18 @@ namespace DataAccess
                 }
                 catch (Exception ex)
                 {
+                    log.Info(ex.Message);
+                    throw ex;
+                }
+                finally
+                {
                     connection.Close();
-                    return false;
                 }
 
             }
 
         }
-
-        // ================== DELETE CATEGORY ====================
+        
         public string DeleteCategory(int id)
         {
             string result = "";

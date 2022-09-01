@@ -13,27 +13,20 @@ namespace Admin.Controllers
     [ValidateSession]
     public class AdminController : Controller
     {
-        AdminBL _userBL = new AdminBL();
-        UserEntity userEx = new UserEntity();
-
-        // GET ALL USERS
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        AdminBL _userBL = new AdminBL();      
+        
         public ActionResult Index(string search)
         {
-            var usersList = _userBL.GetAll();
-
-            if (!String.IsNullOrEmpty(search))
-            {
-                usersList = usersList.Where(s => s.FirstName.ToUpper().Contains(search.ToUpper())
-                                || s.LastName.ToUpper().Contains(search.ToUpper()) || s.Email.ToUpper().Contains(search.ToUpper())).ToList();
-            }
+            var usersList = _userBL.GetAll(search);
+            
             if (usersList.Count == 0)
             {
                 TempData["InfoMessage"] = "No users to show";
             }
             return View(usersList);
         }
-
-        // DETAILS
+        
         public ActionResult Details(int id)
         {
             try
@@ -49,18 +42,16 @@ namespace Admin.Controllers
             }
             catch (Exception ex)
             {
-                TempData["ErroMessage"] = ex.Message;
+                log.Info(ex.Message);
                 return View();
             }
         }
-
-        // CREATE USER BY ADMIN METHOD: GET
+        
         public ActionResult Create()
         {
             return View();
         }
-
-        // CREATE USER BY ADMIN METHOD: POST
+        
         [HttpPost, ActionName("Create")]
         public ActionResult CreateUser(UserAuxEntity user)
         {
@@ -85,12 +76,11 @@ namespace Admin.Controllers
             }
             catch (Exception ex)
             {
-                TempData["ErroMessage"] = ex.Message;
+                log.Info(ex.Message);
                 return View();
             }
         }
-
-        // UPDATE USER METHOD: GET
+        
         public ActionResult Edit(int id)
         {
             var user = _userBL.GetUserById(id).FirstOrDefault();
@@ -102,9 +92,8 @@ namespace Admin.Controllers
             }
 
             return View(user);
-        }       
-
-        // UPDATE USER METHOD: POST
+        }
+        
         [HttpPost, ActionName("Edit")]
         public ActionResult UpdateUser(UserAuxEntity user)
         {
@@ -112,9 +101,8 @@ namespace Admin.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var samePwd = user.Password.Equals(userEx.Password);
-
-                    // IF THERE IS NO NEW PASSWORD WE DONT HASH THE PASSWORD, SIMPLY UPDATE THE NEW FIELDS
+                    var samePwd = user.Password.Equals(_userBL.PasswordToCompare());
+                    
                     if (samePwd)
                     {
                         bool IsUpdated = _userBL.UpdateUser(user);
@@ -130,7 +118,7 @@ namespace Admin.Controllers
                     }
                     else
                     {
-                        // HASHING INSERTED PASSWORD IF NEW PASSWORD IS INSERTED
+                        
                         user.Password = PasswordHash.HashSha256(user.Password);
 
                         bool IsUpdated = _userBL.UpdateUser(user);
@@ -151,13 +139,12 @@ namespace Admin.Controllers
             }
             catch (Exception ex)
             {
-                TempData["ErroMessage"] = ex.Message;
+                log.Info(ex.Message);
                 return View();
 
             }
         }
-
-        // DELETE USER METHOD: GET
+        
         public ActionResult Delete(int id)
         {
             try
@@ -173,12 +160,11 @@ namespace Admin.Controllers
             }
             catch (Exception ex)
             {
-                TempData["ErroMessage"] = ex.Message;
+                log.Info(ex.Message);
                 return View();
             }
         }
-
-        // DELETE USER METHOD: POST
+        
         [HttpPost, ActionName("Delete")]
         public ActionResult DeleteUser(int id)
         {
@@ -198,7 +184,7 @@ namespace Admin.Controllers
             }
             catch (Exception ex)
             {
-                TempData["ErroMessage"] = ex.Message;
+                log.Info(ex.Message);
                 return View();
             }
         }

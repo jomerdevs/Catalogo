@@ -10,14 +10,14 @@ namespace DataBusiness
 {
     public class AuthBL
     {
-        // LOGIN
-        public string Login(UserEntity user)
+        
+        public bool Login(UserEntity user)
         {
             AuthDAL loginUser = new AuthDAL();
             return loginUser.Login(user);
         }
 
-        // REGISTER
+        
         public bool Register(UserEntity user)
         {
             AuthDAL registerUser = new AuthDAL();

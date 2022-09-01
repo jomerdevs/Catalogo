@@ -11,8 +11,9 @@ namespace DataAccess
 {
     public class ProductDAL: ConnectionDAL
     {
-        // ============ GET ALL PRODUCTS ===============
-        public List<ProductEntity> GetAll()
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        public List<ProductEntity> GetAll(string search)
         {
             List<ProductEntity> ProductList = null;
 
@@ -20,11 +21,10 @@ namespace DataAccess
             {
                 try
                 {
-                    // Open DB Connection
+                    
                     connection.Open();
-
-                    // Call the pocedure
-                    using (SqlCommand cmd = new SqlCommand("Productlist", connection))
+                    
+                    using (SqlCommand cmd = new SqlCommand("ProductList", connection))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
                         SqlDataReader reader = cmd.ExecuteReader();
@@ -59,20 +59,95 @@ namespace DataAccess
                             }
                         }
                     }
-
-                    // Close after we get the data
+                    
                     connection.Close();
                 }
                 catch (Exception ex)
+                {
+                    log.Info(ex.Message);
+                    throw ex;
+                }
+                finally
                 {
                     connection.Close();
                 }
             }
 
+            if (!String.IsNullOrEmpty(search))
+            {
+                ProductList = ProductList.Where(s => s.Name.ToUpper().Contains(search.ToUpper())
+                                || s.Model.ToUpper().Contains(search.ToUpper()) || s.Brand.ToUpper().Contains(search.ToUpper()) || s.Category.ToUpper().Contains(search.ToUpper())).ToList();
+
+                return ProductList;
+            }
+
             return ProductList;
         }
 
-        // ================== GET PRODUCT BY ID =================
+        public List<ProductEntity> FilterProductsList(string search)
+        {
+            List<ProductEntity> list = null;
+
+            using (SqlConnection connectionString = new SqlConnection(Connection))
+            {
+                try
+                {
+                    
+                    connectionString.Open();
+                    
+                    using (SqlCommand cmd = new SqlCommand("productListSearch", connectionString))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@search", search);
+                        SqlDataReader reader = cmd.ExecuteReader();
+
+                        if (reader != null)
+                        {
+                            list = new List<ProductEntity>();
+                            ProductEntity product;
+
+                            int propId = reader.GetOrdinal("Id");
+                            int propRefCode = reader.GetOrdinal("RefCode");
+                            int propName = reader.GetOrdinal("Name");
+                            int propModel = reader.GetOrdinal("Model");
+                            int propPrice = reader.GetOrdinal("Price");
+                            int propBrand = reader.GetOrdinal("Brand");
+                            int propCategory = reader.GetOrdinal("Category");
+
+                            while (reader.Read())
+                            {
+                                product = new ProductEntity();
+                                product.Id = reader.IsDBNull(propId) ? 0 : reader.GetInt32(propId);
+                                product.RefCode = reader.IsDBNull(propRefCode) ? "" : reader.GetString(propRefCode);
+                                product.Name = reader.IsDBNull(propName) ? "" : reader.GetString(propName);
+                                product.Model = reader.IsDBNull(propModel) ? "" : reader.GetString(propModel);
+                                product.Price = reader.IsDBNull(propPrice) ? 0 : reader.GetDecimal(propPrice);
+                                product.Brand = reader.IsDBNull(propBrand) ? "" : reader.GetString(propBrand);
+                                product.Category = reader.IsDBNull(propCategory) ? "" : reader.GetString(propCategory);
+
+                                list.Add(product);
+                            }
+                        }
+                    }
+
+                    
+                    connectionString.Close();
+                }
+                catch (Exception ex)
+                {
+                    log.Info(ex.Message);
+                    throw ex;
+                }
+                finally
+                {
+                    connectionString.Close();
+                }
+
+            }
+
+            return list;
+        }
+        
         public List<ProductEntity> GetProductById(int id)
         {
             List<ProductEntity> ProductList = null;
@@ -81,10 +156,9 @@ namespace DataAccess
             {
                 try
                 {
-                    // Open DB Connection
+                    
                     connection.Open();
-
-                    // Call the pocedure
+                    
                     using (SqlCommand cmd = new SqlCommand("getProductById", connection))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
@@ -121,19 +195,22 @@ namespace DataAccess
                             }
                         }
                     }
-
-                    // Close after we get the data
+                    
                     connection.Close();
                 }
                 catch (Exception ex)
+                {
+                    log.Info(ex.Message);
+                    throw ex;
+                }
+                finally
                 {
                     connection.Close();
                 }
             }
             return ProductList;
         }
-
-        // ================== CREATE PRODUCT =================
+        
         public bool CreateProduct(ProductEntity product)
         {
             int id = 0;
@@ -152,10 +229,9 @@ namespace DataAccess
                         cmd.Parameters.AddWithValue("@price", product.Price);
                         cmd.Parameters.AddWithValue("@brand", product.Brand);
                         cmd.Parameters.AddWithValue("@categoryId", product.CategoryId);
-
-                        // Open DB Connection
+                        
                         connection.Open();
-                        id = cmd.ExecuteNonQuery(); // Returns 1 for success and 0 when fail
+                        id = cmd.ExecuteNonQuery(); 
                         connection.Close();
                     }
                     if (id > 0)
@@ -170,15 +246,18 @@ namespace DataAccess
                 }
                 catch (Exception ex)
                 {
+                    log.Info(ex.Message);
+                    throw ex;
+                }
+                finally
+                {
                     connection.Close();
-                    return false;
                 }
 
             }
 
         }
-
-        // ================== UPDATE PRODUCT ===================
+        
         public bool UpdateProduct(ProductEntity product)
         {
             int i = 0;
@@ -198,10 +277,9 @@ namespace DataAccess
                         cmd.Parameters.AddWithValue("@price", product.Price);
                         cmd.Parameters.AddWithValue("@brand", product.Brand);
                         cmd.Parameters.AddWithValue("@categoryId", product.CategoryId);
-
-                        // Open DB Connection
+                        
                         connection.Open();
-                        i = cmd.ExecuteNonQuery(); // Returns 1 for success and 0 when fail
+                        i = cmd.ExecuteNonQuery(); 
                         connection.Close();
                     }
                     if (i > 0)
@@ -216,15 +294,18 @@ namespace DataAccess
                 }
                 catch (Exception ex)
                 {
+                    log.Info(ex.Message);
+                    throw ex;
+                }
+                finally
+                {
                     connection.Close();
-                    return false;
                 }
 
             }
 
         }
-
-        // ================== DELETE PRODUCT ===================
+        
         public string DeleteProduct(int id)
         {
             string result = "";
@@ -244,5 +325,7 @@ namespace DataAccess
 
             return result;
         }
+
+
     }
 }

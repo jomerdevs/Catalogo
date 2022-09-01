@@ -12,21 +12,21 @@ namespace Catalogo.Controllers
     public class UserController : Controller
     {
         AdminBL _userBL = new AdminBL();
-        // GET: User
-        public ActionResult Index(string search)
+        
+        public ActionResult Index()
         {
-            var usersList = _userBL.GetAll();
+            
+            return View();
+        }
 
-            if (!String.IsNullOrEmpty(search))
-            {
-                usersList = usersList.Where(s => s.FirstName.ToUpper().Contains(search.ToUpper())
-                                || s.LastName.ToUpper().Contains(search.ToUpper()) || s.Email.ToUpper().Contains(search.ToUpper())).ToList();
-            }
-            if (usersList.Count == 0)
-            {
-                TempData["InfoMessage"] = "No users to show";
-            }
-            return View(usersList);
+        public JsonResult List(string search)
+        {
+            return Json(_userBL.GetAll(search), JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult FilterCategoryList(string search)
+        {
+            return Json(_userBL.FilterUserList(search), JsonRequestBehavior.AllowGet);
         }
 
     }

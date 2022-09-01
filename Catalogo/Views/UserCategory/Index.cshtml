@@ -1,45 +1,18 @@
-﻿@model IEnumerable<DataEntityLayer.CategoryEntity>
-
+﻿
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_UserLayout.cshtml";
 }
 
+<h2 class="my-5 text-center">CATEGORIES</h2>
 
-<h2 class="text-center my-5">CATEGORIES</h2>
+<div class="input-group mb-3">
+    <input type="text" class="form-control" id="filterCategoryInput" placeholder="Type to search">
+    <button class="btn btn-primary" type="button" id="filterCategories" onclick="Search()">Search</button>
+</div>
+<div class="container" id="categoryTable">
 
+</div>
 
-<form class="my-3" asp-controller="UserCategory" asp-action="Index">
-    <input class="mx-3" type="text" name="search" placeholder=" type to search" />
-    <input type="submit" value="Search" />
-
-</form>
-
-<table class="table table-striped">
-    <thead>
-        <tr class="text-center">
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr class="text-center">
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-
-            </tr>
-        }
-    </tbody>
-
-</table>
+<script src="~/Scripts/CustomJS/generic.js"></script>
+<script src="~/Scripts/CustomJS/userCategory.js"></script>

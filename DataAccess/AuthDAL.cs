@@ -12,6 +12,7 @@ namespace DataAccess
 {
     public class AuthDAL: ConnectionDAL
     {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public static string HashSha256(string password)
         {
             StringBuilder sb = new StringBuilder();
@@ -28,71 +29,60 @@ namespace DataAccess
 
         }
 
-        // ================ LOGIN ===============
-        public string Login(UserEntity user)
+        
+        public bool Login(UserEntity user)
         {
             int id;
 
-            if (user.Password != null)
-            {
-                user.Password = HashSha256(user.Password);
+            user.Password = HashSha256(user.Password);
 
-                using (SqlConnection connection = new SqlConnection(Connection))
+            using (SqlConnection connection = new SqlConnection(Connection))
+            {
+                using (SqlCommand cmd = new SqlCommand("validateUser", connection))
                 {
-                     using (SqlCommand cmd = new SqlCommand("validateUser", connection))
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@email", user.Email);
+                    cmd.Parameters.AddWithValue("@password", user.Password);
+
+                    connection.Open();
+
+                    user.Id = Convert.ToInt32(cmd.ExecuteScalar().ToString());
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    if (reader != null)
+                    {
+
+                        int propIsAdmin = reader.GetOrdinal("IsAdmin");
+
+                        while (reader.Read())
                         {
-                            cmd.CommandType = CommandType.StoredProcedure;
-                            cmd.Parameters.AddWithValue("@email", user.Email);
-                            cmd.Parameters.AddWithValue("@password", user.Password);
-
-                            // Open DB Connection
-                            connection.Open();
-
-                            user.Id = Convert.ToInt32(cmd.ExecuteScalar().ToString());
-                            SqlDataReader reader = cmd.ExecuteReader();
-
-                            if (reader != null)
-                            {
-
-                                int propIsAdmin = reader.GetOrdinal("IsAdmin");
-
-                                while (reader.Read())
-                                {
-                                    user.IsAdmin = reader.IsDBNull(propIsAdmin) ? false : reader.GetBoolean(propIsAdmin);
-                                }
-                            }
-
-                            connection.Close();
-
+                            user.IsAdmin = reader.IsDBNull(propIsAdmin) ? false : reader.GetBoolean(propIsAdmin);
                         }
+                    }
 
-                        id = user.Id;
+                    connection.Close();
 
-                        // CHECK IF USER EXISTS
-                        if (id != 0)
-                        {
-                            return "found";
-                        }
-                        else
-                        {
-                            return "notFound";
-                        }
-                    }                    
+                }
 
+                id = user.Id;
                 
-            }
-            else
-            {
-                return "noPassword";
-            }
-           
+                if (id != 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }         
+              
         }
 
-        // ====================== REGISTER =======================
+        
         public bool Register(UserEntity user)
         {
             bool registered;
-            string message;
+            string message;            
             
             user.Password = HashSha256(user.Password);
 
@@ -110,10 +100,9 @@ namespace DataAccess
                         cmd.Parameters.AddWithValue("@password", user.Password);
                         cmd.Parameters.Add("@registered", SqlDbType.Bit).Direction = ParameterDirection.Output;
                         cmd.Parameters.Add("@message", SqlDbType.VarChar, 100).Direction = ParameterDirection.Output;
-
-                        // Open DB Connection
+                        
                         connection.Open();
-                        cmd.ExecuteNonQuery(); // Returns 1 for success and 0 when fail
+                        cmd.ExecuteNonQuery();
 
                         registered = Convert.ToBoolean(cmd.Parameters["@registered"].Value);
                         message = cmd.Parameters["@message"].Value.ToString();
@@ -130,10 +119,14 @@ namespace DataAccess
                     }
 
                 }
-                catch (Exception)
+                catch (Exception ex)
+                {
+                    log.Info(ex.Message);
+                    throw ex;
+                }
+                finally
                 {
                     connection.Close();
-                    return false;
                 }
 
             }             

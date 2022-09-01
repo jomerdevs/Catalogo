@@ -9,36 +9,37 @@ using System.Threading.Tasks;
 namespace DataBusiness
 {
     public class ProductBL
-    {
-        // GET ALL PRODUCTS
-        public List<ProductEntity> GetAll()
+    {       
+        public List<ProductEntity> GetAll(string search)
         {
             ProductDAL ProductData = new ProductDAL();
-            return ProductData.GetAll();
+            return ProductData.GetAll(search);
         }
-
-        // GET PRODUCT BY ID
+        
         public List<ProductEntity> GetProductById(int id)
         {
             ProductDAL ProductData = new ProductDAL();
             return ProductData.GetProductById(id);
         }
-
-        // CREATE PRODUCT
+        
+        public List<ProductEntity> FilterProductList(string search)
+        {
+            ProductDAL filterData = new ProductDAL();
+            return filterData.FilterProductsList(search);
+        }
+        
         public bool CreateProduct(ProductEntity product)
         {
             ProductDAL createData = new ProductDAL();
             return createData.CreateProduct(product);
         }
-
-        // UPDATE PRODUCT
+        
         public bool UpdateProduct(ProductEntity product)
         {
             ProductDAL updateData = new ProductDAL();
             return updateData.UpdateProduct(product);
         }
-
-        // DELETE PRODUCT
+        
         public string Delete(int id)
         {
             ProductDAL deleteData = new ProductDAL();

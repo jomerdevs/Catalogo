@@ -10,36 +10,38 @@ namespace DataBusiness
 {
     public class CategoryBL
     {
-        // GET ALL CATEGORIES
-        public List<CategoryEntity> GetAll()
+        
+        public List<CategoryEntity> GetAll(string search)
         {
-            CategoryDAL productsData = new CategoryDAL();
-            return productsData.GetAll();
+            CategoryDAL categoryData = new CategoryDAL();
+            return categoryData.GetAll(search);
             
         }
-
-        // GET CATEGORY BY ID
+        
         public List<CategoryEntity> GetCategoryById(int id)
         {
-            CategoryDAL productData = new CategoryDAL();
-            return productData.GetCategoryById(id);
+            CategoryDAL categoryData = new CategoryDAL();
+            return categoryData.GetCategoryById(id);
         }
 
-        // CREATE CATEGORY
+        public List<CategoryEntity> FilterCategoryList(string search)
+        {
+            CategoryDAL filterData = new CategoryDAL();
+            return filterData.FilterCategoryList(search);
+        }
+
         public bool CreateCategory(CategoryEntity product)
         {
             CategoryDAL createData = new CategoryDAL();
             return createData.CreateCategory(product);
         }
-
-        // UPDATE CATEGORY
+        
         public bool UpdateCategory(CategoryEntity product)
         {
             CategoryDAL updateData = new CategoryDAL();
             return updateData.UpdateCategory(product);
         }
-
-        // DELETE CATEGORY
+        
         public string Delete(int id)
         {
             CategoryDAL deleteData = new CategoryDAL();

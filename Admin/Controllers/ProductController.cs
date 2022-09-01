@@ -1,6 +1,7 @@
 ﻿using Admin.Permissions;
 using DataBusiness;
 using DataEntityLayer;
+using Microsoft.Build.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,18 +13,13 @@ namespace Admin.Controllers
     [ValidateSessionAttribute]
     public class ProductController : Controller
     {
-        ProductBL _productBL = new ProductBL();
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        ProductBL _productBL = new ProductBL();        
 
-        // GET ALL PRODUCTS
         public ActionResult Index(string search)
         {
-            var productList = _productBL.GetAll();
-
-            if (!String.IsNullOrEmpty(search))
-            {
-                productList = productList.Where(s => s.Name.ToUpper().Contains(search.ToUpper())
-                                || s.Model.ToUpper().Contains(search.ToUpper()) || s.Brand.ToUpper().Contains(search.ToUpper()) || s.Category.ToUpper().Contains(search.ToUpper())).ToList();
-            }
+            var productList = _productBL.GetAll(search);
+            
             if (productList.Count == 0)
             {
                 TempData["InfoMessage"] = "No products to show";
@@ -32,7 +28,7 @@ namespace Admin.Controllers
             return View(productList);
         }
 
-        // DETAILS
+        
         public ActionResult Details(int id)
         {
             try
@@ -46,20 +42,18 @@ namespace Admin.Controllers
                 }
                 return View(product);
             }
-            catch (Exception ex)
-            {
-                TempData["ErroMessage"] = ex.Message;
+            catch (Exception)
+            {                
                 return View();
             }
         }
-
-        // CREATE PRODUCT METHOD: GET
+        
         public ActionResult Create()
         {
             return View();
         }
 
-        // CREATE PRODUCT METHOD: POST
+        
         [HttpPost]
         public ActionResult Create(ProductEntity product)
         {
@@ -83,12 +77,12 @@ namespace Admin.Controllers
             }
             catch (Exception ex)
             {
-                TempData["ErroMessage"] = ex.Message;
+                log.Info(ex.Message);
                 return View();
             }
         }
 
-        // UPDATE PRODUCT METHOD: GET
+        
         public ActionResult Edit(int id)
         {
             var product = _productBL.GetProductById(id).FirstOrDefault();
@@ -101,7 +95,7 @@ namespace Admin.Controllers
             return View(product);
         }
 
-        // UPDATE PRODUCT METHOD: POST
+        
         [HttpPost, ActionName("Edit")]
         public ActionResult UpdateProduct(ProductEntity product)
         {
@@ -125,15 +119,14 @@ namespace Admin.Controllers
             }
             catch (Exception ex)
             {
-                TempData["ErroMessage"] = ex.Message;
+                log.Info(ex.Message);
                 return View();
-
             }
 
 
         }
 
-        // DELETE PRODUCT METHOD: GET
+        
         public ActionResult Delete(int id)
         {
             try
@@ -149,12 +142,12 @@ namespace Admin.Controllers
             }
             catch (Exception ex)
             {
-                TempData["ErroMessage"] = ex.Message;
+                log.Info(ex.Message);
                 return View();
             }
         }
 
-        // DELETE PRODUCT METHOD: POST
+        
         [HttpPost, ActionName("Delete")]
         public ActionResult DeleteProduct(int id)
         {
@@ -176,7 +169,7 @@ namespace Admin.Controllers
             }
             catch (Exception ex)
             {
-                TempData["ErroMessage"] = ex.Message;
+                log.Info(ex.Message);
                 return View();
             }
 

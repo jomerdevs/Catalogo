@@ -11,8 +11,9 @@ namespace DataAccess
 {
     public class AdminDAL: ConnectionDAL
     {
-        // ================ GET ALL USERS ==================
-        public List<UserEntity> GetAll()
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        public List<UserEntity> GetAll(string search)
         {
             List<UserEntity> UsersList = null;
 
@@ -20,10 +21,9 @@ namespace DataAccess
             {
                 try
                 {
-                    // Open DB Connection
+                    
                     connection.Open();
-
-                    // Call the pocedure
+                    
                     using (SqlCommand cmd = new SqlCommand("UsersList", connection))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
@@ -57,20 +57,93 @@ namespace DataAccess
                             }
                         }
                     }
-
-                    // Close after we get the data
+                    
                     connection.Close();
                 }
                 catch (Exception ex)
+                {
+                    log.Info(ex.Message);
+                    throw ex;
+                }
+                finally
                 {
                     connection.Close();
                 }
             }
 
+            if (!String.IsNullOrEmpty(search))
+            {
+                UsersList = UsersList.Where(s => s.FirstName.ToUpper().Contains(search.ToUpper())
+                                || s.LastName.ToUpper().Contains(search.ToUpper()) || s.Email.ToUpper().Contains(search.ToUpper())).ToList();
+
+                return UsersList;
+            }
+
             return UsersList;
         }
 
-        // ================ GET USER BY ID ==================
+        public List<UserEntity> FilterUserList(string search)
+        {
+            List<UserEntity> list = null;
+
+            using (SqlConnection connectionString = new SqlConnection(Connection))
+            {
+                try
+                {
+
+                    connectionString.Open();
+
+                    using (SqlCommand cmd = new SqlCommand("userFilter", connectionString))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@search", search);
+                        SqlDataReader reader = cmd.ExecuteReader();
+
+                        if (reader != null)
+                        {
+                            list = new List<UserEntity>();
+                            UserEntity user;
+
+                            int propId = reader.GetOrdinal("Id");
+                            int propFirstName = reader.GetOrdinal("FirstName");
+                            int propLastName = reader.GetOrdinal("LastName");
+                            int propEmail = reader.GetOrdinal("Email");
+                            int propPhone = reader.GetOrdinal("Phone");
+                            int propIsAdmin = reader.GetOrdinal("IsAdmin");
+
+                            while (reader.Read())
+                            {
+                                user = new UserEntity();
+                                user.Id = reader.IsDBNull(propId) ? 0 : reader.GetInt32(propId);
+                                user.FirstName = reader.IsDBNull(propFirstName) ? "" : reader.GetString(propFirstName);
+                                user.LastName = reader.IsDBNull(propLastName) ? "" : reader.GetString(propLastName);
+                                user.Email = reader.IsDBNull(propEmail) ? "" : reader.GetString(propEmail);
+                                user.Phone = reader.IsDBNull(propPhone) ? "" : reader.GetString(propPhone);
+                                user.IsAdmin = reader.IsDBNull(propIsAdmin) ? false : reader.GetBoolean(propIsAdmin);
+
+                                list.Add(user);
+                            }
+                        }
+                    }
+
+
+                    connectionString.Close();
+                }
+                catch (Exception ex)
+                {
+                    log.Info(ex.Message);
+                    throw ex;
+                }
+                finally
+                {
+                    connectionString.Close();
+                }
+
+            }
+
+            return list;
+        }
+
         public List<UserAuxEntity> GetUserById(int id)
         {
             List<UserAuxEntity> UsersList = null;
@@ -79,10 +152,9 @@ namespace DataAccess
             {
                 try
                 {
-                    // Open DB Connection
+                    
                     connection.Open();
-
-                    // Call the pocedure
+                    
                     using (SqlCommand cmd = new SqlCommand("getUserById", connection))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
@@ -118,19 +190,22 @@ namespace DataAccess
                             }
                         }
                     }
-
-                    // Close after we get the data
+                    
                     connection.Close();
                 }
                 catch (Exception ex)
+                {
+                    log.Info(ex.Message);
+                    throw ex;
+                }
+                finally
                 {
                     connection.Close();
                 }
             }
             return UsersList;
         }
-
-        // ================ CREATE USER ====================
+        
         public bool CreateUser(UserAuxEntity user)
         {
             int id = 0;
@@ -149,10 +224,9 @@ namespace DataAccess
                         cmd.Parameters.AddWithValue("@phone", user.Phone);
                         cmd.Parameters.AddWithValue("@password", user.Password);
                         cmd.Parameters.AddWithValue("@isAdmin", user.IsAdmin);
-
-                        // Open DB Connection
+                        
                         connection.Open();
-                        id = cmd.ExecuteNonQuery(); // Returns 1 for success and 0 when fail
+                        id = cmd.ExecuteNonQuery();
                         connection.Close();
                     }
                     if (id > 0)
@@ -167,15 +241,19 @@ namespace DataAccess
                 }
                 catch (Exception ex)
                 {
+
+                    log.Info(ex.Message);
+                    throw ex;
+                }
+                finally
+                {
                     connection.Close();
-                    return false;
                 }
 
             }
 
         }
-
-        // ================ UPDATE USER ====================
+        
         public bool UpdateUser(UserAuxEntity user)
         {
             int i = 0;
@@ -195,10 +273,9 @@ namespace DataAccess
                         cmd.Parameters.AddWithValue("@phone", user.Phone);
                         cmd.Parameters.AddWithValue("@password", user.Password);
                         cmd.Parameters.AddWithValue("@isAdmin", user.IsAdmin);
-
-                        // Open DB Connection
+                        
                         connection.Open();
-                        i = cmd.ExecuteNonQuery(); // Returns 1 for success and 0 when fail
+                        i = cmd.ExecuteNonQuery(); 
                         connection.Close();
                     }
                     if (i > 0)
@@ -213,15 +290,18 @@ namespace DataAccess
                 }
                 catch (Exception ex)
                 {
+                    log.Info(ex.Message);
+                    throw ex;
+                }
+                finally
+                {
                     connection.Close();
-                    return false;
                 }
 
             }
 
         }
-
-        // ================ DELETE USER ====================
+        
         public string DeleteUser(int id)
         {
             string result = "";

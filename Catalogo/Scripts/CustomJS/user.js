@@ -17,7 +17,7 @@ function userList() {
 
 function Search() {
 
-    let search = document.getElementById("filterCategoryInput").value;
+    let search = document.getElementById("filterUserInput").value;
 
     showList({
         url: "User/FilterUserList/?search=" + search,

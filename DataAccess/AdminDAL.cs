@@ -1,4 +1,5 @@
 ﻿using DataEntityLayer;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -11,7 +12,7 @@ namespace DataAccess
 {
     public class AdminDAL: ConnectionDAL
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
         public List<UserEntity> GetAll(string search)
         {
@@ -62,7 +63,7 @@ namespace DataAccess
                 }
                 catch (Exception ex)
                 {
-                    log.Info(ex.Message);
+                    logger.Error(ex.Message);
                     throw ex;
                 }
                 finally
@@ -131,7 +132,7 @@ namespace DataAccess
                 }
                 catch (Exception ex)
                 {
-                    log.Info(ex.Message);
+                    logger.Error(ex.Message);
                     throw ex;
                 }
                 finally
@@ -195,7 +196,7 @@ namespace DataAccess
                 }
                 catch (Exception ex)
                 {
-                    log.Info(ex.Message);
+                    logger.Error(ex.Message);
                     throw ex;
                 }
                 finally
@@ -242,7 +243,7 @@ namespace DataAccess
                 catch (Exception ex)
                 {
 
-                    log.Info(ex.Message);
+                    logger.Error(ex.Message);
                     throw ex;
                 }
                 finally
@@ -290,7 +291,7 @@ namespace DataAccess
                 }
                 catch (Exception ex)
                 {
-                    log.Info(ex.Message);
+                    logger.Error(ex.Message);
                     throw ex;
                 }
                 finally

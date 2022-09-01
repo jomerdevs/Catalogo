@@ -1,4 +1,5 @@
 ﻿using DataEntityLayer;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -12,7 +13,7 @@ namespace DataAccess
 {
     public class AuthDAL: ConnectionDAL
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         public static string HashSha256(string password)
         {
             StringBuilder sb = new StringBuilder();
@@ -121,7 +122,7 @@ namespace DataAccess
                 }
                 catch (Exception ex)
                 {
-                    log.Info(ex.Message);
+                    logger.Error("Exception ===> " + ex.Message);
                     throw ex;
                 }
                 finally

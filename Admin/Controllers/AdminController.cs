@@ -2,6 +2,7 @@
 using Admin.Utils;
 using DataBusiness;
 using DataEntityLayer;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,8 @@ namespace Admin.Controllers
     [ValidateSession]
     public class AdminController : Controller
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
         AdminBL _userBL = new AdminBL();      
         
         public ActionResult Index(string search)
@@ -42,7 +44,7 @@ namespace Admin.Controllers
             }
             catch (Exception ex)
             {
-                log.Info(ex.Message);
+                logger.Error("Exception ===> " + ex.Message);
                 return View();
             }
         }
@@ -76,7 +78,7 @@ namespace Admin.Controllers
             }
             catch (Exception ex)
             {
-                log.Info(ex.Message);
+                logger.Error("Exception ===> " + ex.Message);
                 return View();
             }
         }
@@ -139,7 +141,7 @@ namespace Admin.Controllers
             }
             catch (Exception ex)
             {
-                log.Info(ex.Message);
+                logger.Error("Exception ===> " + ex.Message);
                 return View();
 
             }
@@ -160,7 +162,7 @@ namespace Admin.Controllers
             }
             catch (Exception ex)
             {
-                log.Info(ex.Message);
+                logger.Error("Exception ===> " + ex.Message);
                 return View();
             }
         }
@@ -184,7 +186,7 @@ namespace Admin.Controllers
             }
             catch (Exception ex)
             {
-                log.Info(ex.Message);
+                logger.Error("Exception ===> " + ex.Message);
                 return View();
             }
         }

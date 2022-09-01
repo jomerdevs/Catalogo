@@ -6,12 +6,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using NLog;
 
 namespace Catalogo.Controllers
 {
     public class AuthController : Controller
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
         AuthBL _authBL = new AuthBL();
         
         public ActionResult Login()
@@ -58,7 +60,7 @@ namespace Catalogo.Controllers
             }
             catch(Exception ex)
             {    
-;               log.Info(ex.Message);
+;               logger.Error("Exception ===> " + ex.Message);
                 return View();
             }
 
@@ -115,7 +117,7 @@ namespace Catalogo.Controllers
             }
             catch (Exception ex)
             {
-                log.Info(ex.Message);
+                logger.Error("Exception ===> " + ex.Message);
                 return View();
             }           
                  

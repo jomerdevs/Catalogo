@@ -2,6 +2,7 @@
 using DataBusiness;
 using DataEntityLayer;
 using Microsoft.Build.Framework;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,8 @@ namespace Admin.Controllers
     [ValidateSessionAttribute]
     public class ProductController : Controller
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
         ProductBL _productBL = new ProductBL();        
 
         public ActionResult Index(string search)
@@ -42,8 +44,9 @@ namespace Admin.Controllers
                 }
                 return View(product);
             }
-            catch (Exception)
-            {                
+            catch (Exception ex)
+            {
+                logger.Error(ex.Message);
                 return View();
             }
         }
@@ -77,7 +80,7 @@ namespace Admin.Controllers
             }
             catch (Exception ex)
             {
-                log.Info(ex.Message);
+                logger.Error(ex.Message);
                 return View();
             }
         }
@@ -119,7 +122,7 @@ namespace Admin.Controllers
             }
             catch (Exception ex)
             {
-                log.Info(ex.Message);
+                logger.Error(ex.Message);
                 return View();
             }
 
@@ -142,7 +145,7 @@ namespace Admin.Controllers
             }
             catch (Exception ex)
             {
-                log.Info(ex.Message);
+                logger.Error(ex.Message);
                 return View();
             }
         }
@@ -169,7 +172,7 @@ namespace Admin.Controllers
             }
             catch (Exception ex)
             {
-                log.Info(ex.Message);
+                logger.Error(ex.Message);
                 return View();
             }
 

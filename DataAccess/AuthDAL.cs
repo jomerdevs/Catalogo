@@ -107,7 +107,7 @@ namespace DataAccess
 
                         registered = Convert.ToBoolean(cmd.Parameters["@registered"].Value);
                         message = cmd.Parameters["@message"].Value.ToString();
-                        connection.Close();
+                        
                     }
 
                     if (registered)

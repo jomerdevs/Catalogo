@@ -1,27 +1,24 @@
 ﻿using DataBusiness;
-using Admin;
 using DataEntityLayer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Admin.Controllers;
-using NLog;
 
-namespace Catalogo.Controllers
+namespace Admin.Controllers
 {
     public class AuthController : Controller
     {
         private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
         AuthBL _authBL = new AuthBL();
-        
+
         public ActionResult Login()
         {
             return View();
         }
-        
+
         [HttpPost, ActionName("Login")]
         public ActionResult LoginUser(UserEntity user)
         {
@@ -36,7 +33,7 @@ namespace Catalogo.Controllers
                         if (user.IsAdmin)
                         {
                             Session["user"] = user;
-                            return RedirectToAction("Index", "Product");                            
+                            return RedirectToAction("Index", "Product");
                         }
                         else
                         {
@@ -49,35 +46,36 @@ namespace Catalogo.Controllers
                         TempData["ErroMessage"] = "User not found";
                         return View();
                     }
-                    
+
                 }
                 else
-                {                    
+                {
+                    TempData["ErroMessage"] = "Password required";
                     return View();
                 }
 
 
             }
-            catch(Exception ex)
-            {    
-;               logger.Error("Exception ===> " + ex.Message);
+            catch (Exception ex)
+            {
+                ; logger.Error("Exception : " + ex.Message);
                 return View();
             }
 
         }
-        
+
         public ActionResult Logout()
         {
             Session["user"] = null;
             return RedirectToAction("Login", "Auth");
         }
-        
+
         public ActionResult Register()
         {
             return View();
-        }  
+        }
 
-        
+
         [HttpPost, ActionName("Register")]
         public ActionResult RegisterUser(UserEntity user)
         {
@@ -104,21 +102,23 @@ namespace Catalogo.Controllers
                         }
                     }
                     else
-                    {                        
+                    {
+                        TempData["ErroMessage"] = "The Passwords don't match";
                         return View();
                     }
                 }
                 else
-                {                    
+                {
+                    TempData["ErroMessage"] = "The password is required";
                     return View();
                 }
             }
             catch (Exception ex)
             {
-                logger.Error("Exception ===> " + ex.Message);
+                logger.Error("Exception : " + ex.Message);
                 return View();
-            }           
-                 
+            }
+
         }
     }
 }

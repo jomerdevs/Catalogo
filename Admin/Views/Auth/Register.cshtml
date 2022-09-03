@@ -12,25 +12,22 @@
     <link href="https://fonts.googleapis.com/css?family=Kaushan+Script" rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <link href="~/Content/css/Login.css" rel="stylesheet" />
+    <link href="~/Content/css/LoginForm.css" rel="stylesheet" />
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/jquery.validation/1.15.1/jquery.validate.min.js"></script>
-
-    <!-- VALIDATE JQUERY VALIDATOR -->
-    <script src="~/Scripts/validator.js"></script>
 </head>
 <body>
     <div class="container">
         <div class="row">
             <div class="col-md-5 mx-auto">
-                <div id="second">
+                <div id="first">
                     <div class="myform form ">
                         <div class="logo mb-3">
                             <div class="col-md-12 text-center">
                                 <h1>Register</h1>
                             </div>
                         </div>
-                        <form action="@Url.Action("Register", "Auth")" method="post" name="registration" role="form">
+                        <form action="@Url.Action("Register", "Auth")" method="post">
                             <div class="form-group">
                                 <label for="exampleInputEmail1">First Name</label>
                                 <input type="text" name="FirstName" class="form-control" id="firstname" aria-describedby="emailHelp" placeholder="Enter Firstname">

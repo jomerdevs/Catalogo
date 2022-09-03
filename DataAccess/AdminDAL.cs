@@ -57,9 +57,8 @@ namespace DataAccess
                                 UsersList.Add(user);
                             }
                         }
-                    }
+                    }                    
                     
-                    connection.Close();
                 }
                 catch (Exception ex)
                 {
@@ -125,10 +124,7 @@ namespace DataAccess
                                 list.Add(user);
                             }
                         }
-                    }
-
-
-                    connectionString.Close();
+                    }                    
                 }
                 catch (Exception ex)
                 {
@@ -190,9 +186,8 @@ namespace DataAccess
                                 UsersList.Add(user);
                             }
                         }
-                    }
+                    }                    
                     
-                    connection.Close();
                 }
                 catch (Exception ex)
                 {
@@ -228,7 +223,7 @@ namespace DataAccess
                         
                         connection.Open();
                         id = cmd.ExecuteNonQuery();
-                        connection.Close();
+                        
                     }
                     if (id > 0)
                     {
@@ -277,7 +272,7 @@ namespace DataAccess
                         
                         connection.Open();
                         i = cmd.ExecuteNonQuery(); 
-                        connection.Close();
+                        
                     }
                     if (i > 0)
                     {

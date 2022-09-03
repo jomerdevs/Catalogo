@@ -59,9 +59,8 @@ namespace DataAccess
                                 ProductList.Add(product);
                             }
                         }
-                    }
+                    }                    
                     
-                    connection.Close();
                 }
                 catch (Exception ex)
                 {
@@ -129,10 +128,8 @@ namespace DataAccess
                                 list.Add(product);
                             }
                         }
-                    }
-
+                    }                   
                     
-                    connectionString.Close();
                 }
                 catch (Exception ex)
                 {
@@ -195,9 +192,8 @@ namespace DataAccess
                                 ProductList.Add(product);
                             }
                         }
-                    }
+                    }                   
                     
-                    connection.Close();
                 }
                 catch (Exception ex)
                 {
@@ -233,7 +229,7 @@ namespace DataAccess
                         
                         connection.Open();
                         id = cmd.ExecuteNonQuery(); 
-                        connection.Close();
+                        
                     }
                     if (id > 0)
                     {
@@ -281,7 +277,7 @@ namespace DataAccess
                         
                         connection.Open();
                         i = cmd.ExecuteNonQuery(); 
-                        connection.Close();
+                        
                     }
                     if (i > 0)
                     {

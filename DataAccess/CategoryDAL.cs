@@ -52,11 +52,7 @@ namespace DataAccess
                                 CategoryList.Add(category);
                             }
                         }
-                    }
-                   
-                    connection.Close();
-                    
-                    
+                    }                
                 }
                 catch (Exception ex)
                 {
@@ -122,10 +118,7 @@ namespace DataAccess
                                 list.Add(category);
                             }
                         }
-                    }
-
-
-                    connectionString.Close();
+                    }                    
                 }
                 catch (Exception ex)
                 {
@@ -181,9 +174,8 @@ namespace DataAccess
                                 CategoryList.Add(category);
                             }
                         }
-                    }
+                    }             
                     
-                    connection.Close();
                 }
                 catch (Exception ex)
                 {
@@ -218,7 +210,7 @@ namespace DataAccess
                         
                         connection.Open();
                         id = cmd.ExecuteNonQuery(); 
-                        connection.Close();
+                        
                     }
                     if (id > 0)
                     {
@@ -243,8 +235,7 @@ namespace DataAccess
             }
 
         }
-
-        // =================== UPDATE CATEGORY =====================
+        
         public bool UpdateCategory(CategoryEntity category)
         {
             int i = 0;
@@ -264,7 +255,7 @@ namespace DataAccess
                         
                         connection.Open();
                         i = cmd.ExecuteNonQuery(); 
-                        connection.Close();
+                        
                     }
                     if (i > 0)
                     {

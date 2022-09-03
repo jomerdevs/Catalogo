@@ -17,7 +17,9 @@ namespace Admin
                 name: "Default",
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Product", action = "Index", id = UrlParameter.Optional }
+                
             );
+            
         }
     }
 }

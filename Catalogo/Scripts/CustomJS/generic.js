@@ -1,9 +1,12 @@
 ﻿function showList(configurationObj){        
 
     // Controller/Action
-    fetch(configurationObj.url)
-        .then(res => res.json())
-        .then(res => {
+    $.ajax({
+        type: 'GET',
+        url: configurationObj.url,
+        contentType: 'application/json',
+        success: function (res) {
+
             let content = "<table class='table table-striped'>";
             content += "<thead>";
             content += "<tr class='text-center'>";
@@ -24,7 +27,13 @@
 
                 for (let j = 0; j < configurationObj.properties.length; j++) {
                     property = configurationObj.properties[j]
+                    if (property === 'Created') {
+                        row[property] = Date(row[property])
+                        content += "<td>" + row[property] + "</td>";
+                    } else {
                     content += "<td>" + row[property] + "</td>";
+                    }
+                                       
                 }
 
                 content += "</tr>";
@@ -34,6 +43,11 @@
             content += "</table>";
 
             document.getElementById(configurationObj.id).innerHTML = content;
-        })
+
+            console.log(res);
+        }, error: function (error) {
+            console.log(error);
+        }
+    })    
 }
 

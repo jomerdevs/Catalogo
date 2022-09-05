@@ -12,7 +12,8 @@ namespace Catalogo.Controllers
     [ValidateSession]
     public class UserProductController : Controller
     {
-       
+        ProductBL _productBL = new ProductBL();
+
         public ActionResult Index()
         {
             return View();
@@ -20,13 +21,13 @@ namespace Catalogo.Controllers
 
         public JsonResult List(string search)
         {
-            ProductBL _productBL = new ProductBL();
+            
             return Json(_productBL.GetAll(search), JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult FilterProductsList(string search)
         {
-            ProductBL _productBL = new ProductBL();
+            
             return Json(_productBL.FilterProductList(search), JsonRequestBehavior.AllowGet);
         }
         

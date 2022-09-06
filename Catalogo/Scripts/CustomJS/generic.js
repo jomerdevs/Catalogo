@@ -31,7 +31,7 @@
                         row[property] = Date(row[property])
                         content += "<td>" + row[property] + "</td>";
                     } else {
-                    content += "<td>" + row[property] + "</td>";
+                        content += "<td>" + row[property] + "</td>";
                     }
                                        
                 }
